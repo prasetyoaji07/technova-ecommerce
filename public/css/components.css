@@ -1,0 +1,36 @@
+.btn { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: var(--unit-9); padding: 0 var(--unit-20); border: 1px solid transparent; border-radius: var(--radius-pill); font-weight: 800; transition: .18s ease; }
+.btn-primary { color: var(--white); background: var(--blue-600); }
+.btn-primary:hover { background: var(--blue-700); transform: translateY(-1px); }
+.btn-light { color: var(--navy-900); background: var(--white); }
+.btn-outline { color: var(--navy-900); background: var(--white); border-color: var(--line); }
+.btn-outline:hover { border-color: var(--blue-600); color: var(--blue-600); }
+.icon-btn { width: 44px; height: 44px; display: inline-grid; place-items: center; position: relative; border: 1px solid var(--line); border-radius: var(--radius-circle); background: var(--white); color: var(--navy-900); }
+.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.badge-count { position: absolute; top: -4px; right: -4px; min-width: 19px; height: 19px; display: grid; place-items: center; padding: 0 var(--unit-4); border: 2px solid var(--white); border-radius: var(--radius-20); color: var(--white); background: var(--blue-600); font-size: 10px; font-weight: 800; }
+.product-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--unit-14); }
+.product-card { min-width: 0; position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--white); transition: transform .2s, box-shadow .2s; }
+.product-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); }
+.product-media { position: relative; display: grid; place-items: center; min-height: 176px; padding: var(--unit-16); background: var(--blue-50); }
+.product-media img { width: 100%; height: 150px; object-fit: contain; }
+.product-tag { position: absolute; top: 12px; left: 12px; padding: var(--unit-5) var(--unit-9); border-radius: var(--radius-pill); color: var(--blue-700); background: var(--white); font-size: 10px; font-weight: 800; }
+.product-info { padding: var(--unit-14); }
+.product-brand { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+.product-name { display: block; min-height: 44px; margin: var(--unit-4) 0 var(--unit-8); font-size: 14px; font-weight: 800; line-height: 1.5; }
+.product-rating { display: flex; align-items: center; gap: var(--unit-5); margin-bottom: var(--unit-9); color: var(--muted); font-size: 11px; }
+.product-rating .star { color: var(--star); }
+.price-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--unit-7); }
+.price { color: var(--navy-900); font-size: 16px; font-weight: 800; }
+.old-price { color: var(--old-price); font-size: 11px; text-decoration: line-through; }
+.discount { color: var(--danger); font-size: 11px; font-weight: 800; }
+.card-actions { display: flex; gap: var(--unit-8); margin-top: var(--unit-12); }
+.card-actions .btn { flex: 1; min-height: 40px; padding-inline: var(--unit-10); font-size: 12px; }
+.card-actions .icon-btn { flex: 0 0 40px; width: 40px; height: 40px; }
+.state { padding: var(--unit-28) var(--unit-16); border: 1px dashed var(--line); border-radius: var(--radius-card); color: var(--muted); text-align: center; }
+.state strong { display: block; margin-bottom: var(--unit-5); color: var(--ink); }
+.skeleton { overflow: hidden; position: relative; background: var(--skeleton-bg); border-radius: var(--radius-9); }
+.skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg,transparent,var(--shine),transparent); animation: shimmer 1.3s infinite; }
+@keyframes shimmer { to { transform: translateX(100%); } }
+.field { width: 100%; min-height: 46px; padding: var(--unit-10) var(--unit-14); border: 1px solid var(--line); border-radius: var(--radius-10); color: var(--ink); background: var(--white); }
+.skeleton-media { height: 176px; border-radius: 0; }
+.skeleton-line { height: 13px; margin: var(--unit-10) 0; }
+.skeleton-line.short { width: 62%; }

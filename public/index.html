@@ -1,37 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prasetyo Aji - Tugas Hacktiv</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="MBG-logo.png" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0A1B4D">
+  <meta name="description" content="Temukan smartphone dan aksesori pilihan di TechNova.">
+  <title>TechNova — Temukan perangkat yang tepat</title>
+  <link rel="icon" href="/img/icons.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <script type="module" src="/js/pages/home.js"></script>
 </head>
-<body>
-  <main class="chat-container">
-    <header class="chat-header">
-      <div class="avatar"><img src="MBG-logo.png" alt="Logo Mulai Bot Gratiz" /></div>
-      <div class="title">
-        <h1>Mulai Bot Gratiz</h1>
-        <p>Maju Bareng AI || Tugas Final Hacktiv8</p>
+<body data-page="home">
+  <header class="site-header" data-site-header></header>
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">New Arrival · Koleksi terbaru</span>
+          <h1>Teknologi baru,<br>kemungkinan baru.</h1>
+          <p>Temukan smartphone pilihan dengan performa, kamera, dan daya tahan yang sesuai dengan kebutuhan harianmu.</p>
+          <div class="hero-actions"><a class="btn btn-light" href="/shop.html">Jelajahi produk</a><a class="btn btn-outline hero-secondary" href="/shop.html?deal=true">Lihat penawaran</a></div>
+        </div>
+        <div class="hero-art" aria-hidden="true"><div class="hero-orbit"></div><div class="hero-phone"></div></div>
       </div>
-      <button id="clear-btn" type="button" title="Mulai percakapan baru">🗑️ Reset</button>
-    </header>
-
-    <div id="chat-box" class="chat-box" aria-live="polite"></div>
-
-    <div class="suggestions" id="suggestions">
-      <button type="button" data-q="Apa itu gizi seimbang dan isi piringku?">Gizi Seimbang</button>
-      <button type="button" data-q="Beri ide menu makan bergizi untuk anak SD hari ini">Menu Hari Ini</button>
-      <button type="button" data-q="Bagaimana cara menjaga kebersihan makanan sebelum disajikan?">Kebersihan Makanan</button>
-      <button type="button" data-q="Apa pengganti sayur untuk anak yang tidak suka sayur?">Anak Susah Makan Sayur</button>
-    </div>
-
-    <form id="chat-form" class="chat-form" autocomplete="off">
-      <input type="text" id="user-input" placeholder="Tanya seputar gizi dan makan sehat..." required />
-      <button type="submit" id="send-btn">Kirim</button>
-    </form>
+    </section>
+    <section class="container benefit-strip" aria-label="Keunggulan TechNova">
+      <div class="benefit"><span data-icon="truck"></span><div><strong>Free Shipping</strong><span>Gratis ongkir pilihan</span></div></div>
+      <div class="benefit"><span data-icon="shield-check"></span><div><strong>Secure Payment</strong><span>Transaksi lebih aman</span></div></div>
+      <div class="benefit"><span data-icon="headphones"></span><div><strong>24/7 Support</strong><span>Siap membantu kamu</span></div></div>
+      <div class="benefit"><span data-icon="refresh"></span><div><strong>Easy Returns</strong><span>Proses retur praktis</span></div></div>
+    </section>
+    <section class="section container">
+      <div class="section-head"><div><span class="eyebrow">Pilihan pelanggan</span><h2>Popular Smartphones</h2><p>Perangkat favorit untuk menemani aktivitasmu.</p></div><a class="btn btn-outline" href="/shop.html">Lihat semua</a></div>
+      <div class="product-grid" data-popular aria-live="polite"></div>
+    </section>
+    <section class="section container">
+      <div class="offer-banner"><div><span class="eyebrow">Penawaran terbatas</span><h2>Limited Time Offer</h2><p>Temukan harga spesial untuk perangkat pilihan. Selama persediaan masih ada.</p></div><a class="btn btn-light" href="/shop.html?deal=true">Belanja promo</a></div>
+    </section>
+    <section class="section section-soft">
+      <div class="container"><div class="section-head"><div><span class="eyebrow">Pilihan merek</span><h2>Shop by Brand</h2><p>Jelajahi koleksi dari merek teknologi favorit.</p></div></div><div class="brand-grid" data-brands></div></div>
+    </section>
+    <section class="section container">
+      <div class="section-head"><div><span class="eyebrow">Harga pilihan</span><h2>Best Deals</h2><p>Penawaran menarik untuk upgrade perangkat berikutnya.</p></div><a class="btn btn-outline" href="/shop.html?deal=true">Semua promo</a></div>
+      <div class="product-grid" data-deals aria-live="polite"></div>
+    </section>
+    <section class="section container" id="about">
+      <div class="newsletter"><div><span class="eyebrow">Stay Connected</span><h2>Jangan lewatkan kabar terbaru.</h2><p class="muted">Dapatkan info produk dan penawaran TechNova langsung ke emailmu.</p></div>
+        <form class="newsletter-form" data-newsletter><label class="sr-only" for="newsletter-email">Alamat email</label><input class="field" id="newsletter-email" type="email" placeholder="Alamat email kamu" required><button class="btn btn-primary" type="submit">Berlangganan</button><span class="muted" data-feedback aria-live="polite"></span></form>
+      </div>
+    </section>
   </main>
-  <script src="script.js"></script>
+  <footer class="site-footer" data-site-footer></footer>
 </body>
 </html>
