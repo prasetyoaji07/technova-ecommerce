@@ -1,13 +1,28 @@
 import { get, post } from './api.js';
 import { h, icon } from './dom.js';
 
+const CART_CHANGED_EVENT = 'cart:changed';
+const HTTP_UNAUTHORIZED = 401;
+const HTTP_FORBIDDEN = 403;
 const navItems = [['Home','/','home'],['Shop','/shop.html','shop'],['Categories','/shop.html?category=smartphone','categories'],['Deals','/shop.html?deal=true','deals'],['About','/#about','about']];
 
+export async function refreshCartCount() {
+  try {
+    const data = await get('/cart', { redirectOn401: false });
+    const total = (data.items || []).reduce((sum, item) => sum + item.qty, 0);
+    document.querySelectorAll('[data-cart-count]').forEach(badge => { badge.textContent = String(total); });
+  } catch (error) {
+    if (error.status !== HTTP_UNAUTHORIZED && error.status !== HTTP_FORBIDDEN) console.warn('Badge keranjang gagal diperbarui:', error.message);
+  }
+}
+
 export function mountLayout(active = '') {
+  window.addEventListener(CART_CHANGED_EVENT, refreshCartCount);
   const header = document.querySelector('[data-site-header]');
   const footer = document.querySelector('[data-site-footer]');
   if (header) renderHeader(header, active);
   if (footer) renderFooter(footer);
+  import('./chat-widget.js').catch(() => {});
 }
 
 function renderHeader(root, active) {
@@ -26,13 +41,25 @@ function renderHeader(root, active) {
   root.replaceChildren(h('div', { className: 'container header-main' }, toggle,
     h('a', { className: 'brand-mark', href: '/', 'aria-label': 'TechNova beranda' }, h('span', { className: 'brand-symbol' }, icon('smartphone')), 'TechNova'),
     nav, search, tools));
-  get('/cart', { redirectOn401: false }).then(data => {
-    const badge = root.querySelector('[data-cart-count]');
-    if (badge) badge.textContent = String((data.items || []).reduce((sum, item) => sum + item.qty, 0));
-  }).catch(() => {});
+  refreshCartCount();
   get('/auth/me', { redirectOn401: false }).then(data => {
     const account = root.querySelector('.account-link');
-    if (account && data.user) { account.textContent = data.user.name.split(' ')[0]; account.href = '/orders.html'; }
+    if (!account || !data.user) return;
+    account.textContent = data.user.name.split(' ')[0];
+    account.href = '/orders.html';
+    if (data.user.role === 'admin') {
+      // Admin mengelola toko, bukan berbelanja: sembunyikan wishlist/keranjang dan arahkan akun ke panel admin.
+      document.body.classList.add('is-admin');
+      root.querySelectorAll('.header-tools a[href="/wishlist.html"], .header-tools a[href="/cart.html"]').forEach(node => node.remove());
+      account.href = '/admin';
+      root.querySelector('.header-tools').prepend(h('a', { className: 'account-link admin-store-link', href: '/admin' }, 'Admin'));
+    }
+    const logout = h('button', { className: 'account-link header-logout', type: 'button', onClick: async () => {
+      logout.disabled = true;
+      try { await post('/auth/logout', {}); window.location.assign('/login.html'); }
+      catch (error) { logout.disabled = false; account.textContent = error.message || 'Gagal keluar'; }
+    } }, 'Keluar');
+    root.querySelector('.header-tools').append(logout);
   }).catch(() => {});
 }
 

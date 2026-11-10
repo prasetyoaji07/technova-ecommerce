@@ -1,0 +1,23 @@
+.cs { position: relative; width: 100%; min-width: 0; }
+.cs-native { position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; margin: 0; padding: 0; border: 0; opacity: 0; pointer-events: none; }
+.cs-trigger {
+  display: flex; align-items: center; justify-content: space-between; text-align: left; cursor: pointer;
+  padding-right: var(--unit-40);
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - var(--unit-20)) 50%, calc(100% - var(--unit-14)) 50%;
+  background-size: var(--unit-6) var(--unit-6), var(--unit-6) var(--unit-6); background-repeat: no-repeat;
+}
+.cs-trigger:focus-visible, .cs.is-open .cs-trigger { outline: 2px solid var(--blue-600); outline-offset: 1px; border-color: var(--blue-600); }
+.cs-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.cs-list {
+  position: absolute; z-index: 50; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none;
+  max-height: 240px; overflow-y: auto; box-sizing: border-box;
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-10);
+  box-shadow: 0 12px 32px rgba(10, 27, 77, .16);
+}
+.cs-list[hidden] { display: none; }
+.cs.is-up .cs-list { top: auto; bottom: calc(100% + 4px); }
+.cs-option { padding: 10px 12px; border-radius: var(--radius-sm); color: var(--ink); font-size: 14px; cursor: pointer; overflow-wrap: anywhere; }
+.cs-option.is-active { background: var(--blue-50); }
+.cs-option.is-selected { color: var(--blue-700); font-weight: 700; }
+.cs-option[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }

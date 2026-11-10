@@ -5,9 +5,11 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.resolve(here, '../../data');
-fs.mkdirSync(dataDir, { recursive: true });
+// TECHNOVA_DB_PATH dipakai tes agar tidak menyentuh data/technova.db.
+const dbPath = process.env.TECHNOVA_DB_PATH || path.join(dataDir, 'technova.db');
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
-export const db = new Database(path.join(dataDir, 'technova.db'));
+export const db = new Database(dbPath);
 db.pragma('foreign_keys = ON');
 db.pragma('journal_mode = WAL');
 db.pragma('busy_timeout = 5000');

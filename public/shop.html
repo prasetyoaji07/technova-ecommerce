@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0A1B4D"><title>Shop — TechNova</title>
-  <link rel="stylesheet" href="/css/tokens.css"><link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/components.css"><link rel="stylesheet" href="/css/pages.css">
+  <link rel="stylesheet" href="/css/tokens.css"><link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/components.css"><link rel="stylesheet" href="/css/pages.css"><link rel="stylesheet" href="/css/custom-select.css">
+  <script type="module" src="/js/custom-select.js"></script>
   <script type="module" src="/js/pages/shop.js"></script>
 </head>
 <body data-page="shop">
@@ -13,12 +14,12 @@
     <div class="shop-layout">
       <aside class="filters" aria-label="Filter produk">
         <h3>Filter Produk</h3>
-        <label for="filter-brand">Merek</label><select class="field" id="filter-brand"><option value="">Semua merek</option></select>
-        <label for="filter-category">Kategori</label><select class="field" id="filter-category"><option value="">Semua kategori</option></select>
-        <label for="filter-min">Harga minimum</label><input class="field" id="filter-min" type="number" min="0" placeholder="Rp 0">
-        <label for="filter-max">Harga maksimum</label><input class="field" id="filter-max" type="number" min="0" placeholder="Tanpa batas">
-        <label for="filter-deal">Penawaran</label><select class="field" id="filter-deal"><option value="">Semua produk</option><option value="true">Sedang diskon</option></select>
-        <button class="btn btn-primary filter-submit" type="button">Terapkan filter</button>
+        <div class="filter-field filter-field-wide"><label for="filter-brand">Merek</label><select class="field" id="filter-brand"><option value="">Semua merek</option></select></div>
+        <div class="filter-field filter-field-wide"><label for="filter-category">Kategori</label><select class="field" id="filter-category"><option value="">Semua kategori</option></select></div>
+        <div class="filter-field"><label for="filter-min">Harga minimum</label><input class="field" id="filter-min" type="number" min="0" inputmode="numeric" placeholder="Rp 0"></div>
+        <div class="filter-field"><label for="filter-max">Harga maksimum</label><input class="field" id="filter-max" type="number" min="0" inputmode="numeric" placeholder="Tanpa batas"></div>
+        <div class="filter-field filter-field-wide"><label for="filter-deal">Penawaran</label><select class="field" id="filter-deal"><option value="">Semua produk</option><option value="true">Sedang diskon</option></select></div>
+        <button class="btn btn-primary btn-block filter-submit" type="button">Terapkan filter</button>
       </aside>
       <section>
         <div class="shop-toolbar"><p class="muted" data-result-count>Memuat katalog...</p><label class="sr-only" for="sort-products">Urutkan produk</label><select class="field" id="sort-products"><option value="popular">Paling populer</option><option value="newest">Terbaru</option><option value="price_asc">Harga terendah</option><option value="price_desc">Harga tertinggi</option></select></div>

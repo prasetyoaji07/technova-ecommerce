@@ -29,13 +29,16 @@ app.use(helmet({ contentSecurityPolicy: { directives: {
   fontSrc: ["'self'", 'https://fonts.gstatic.com'], imgSrc: ["'self'", 'https:', 'data:'],
   connectSrc: ["'self'"], objectSrc: ["'none'"], baseUri: ["'self'"], frameAncestors: ["'none'"]
 } } }));
+app.use('/api/admin/upload', express.json({ limit: '3.5mb' }));
 app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
 app.use(globalLimiter);
 app.use(csrfProtection);
 
 app.get('/api/health', (req, res) => success(res, { status: 'ok' }));
-app.use('/api/auth', authLimiter, authRoutes);
+app.post('/api/auth/login', authLimiter);
+app.post('/api/auth/register', authLimiter);
+app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api', catalogRoutes);
 app.use('/api/cart', cartRoutes);

@@ -19,8 +19,15 @@ export function h(tag, props = {}, ...children) {
 }
 
 export function clear(node) { node.replaceChildren(); }
+const SVG_NS = 'http://www.w3.org/2000/svg';
 export function icon(name, className = 'icon') {
-  return h('svg', { className, 'aria-hidden': 'true' }, h('use', { href: `/img/icons.svg#${name}` }));
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', className);
+  svg.setAttribute('aria-hidden', 'true');
+  const use = document.createElementNS(SVG_NS, 'use');
+  use.setAttribute('href', `/img/icons.svg#${name}`);
+  svg.append(use);
+  return svg;
 }
 export function messageState(title, message, action) {
   const box = h('div', { className: 'state', role: 'status' }, h('strong', {}, title), h('span', {}, message));

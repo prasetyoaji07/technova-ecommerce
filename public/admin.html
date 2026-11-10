@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1b4d">
+  <title>Admin · TechNova</title>
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/chat-widget.css">
+  <script type="module" src="/js/chat-widget.js"></script>
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <aside class="admin-sidebar" aria-label="Navigasi admin">
+      <a class="admin-brand" href="/" aria-label="TechNova beranda">
+        <span class="brand-mark" aria-hidden="true">T</span>
+        <span>Tech<span>Nova</span><small>ADMIN CONSOLE</small></span>
+      </a>
+      <div class="sidebar-caption">WORKSPACE</div>
+      <nav class="admin-nav" role="tablist" aria-label="Menu admin">
+        <button class="admin-nav-item is-active" type="button" role="tab" aria-selected="true" aria-controls="admin-panel" data-tab="dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg>Dashboard
+        </button>
+        <button class="admin-nav-item" type="button" role="tab" aria-selected="false" aria-controls="admin-panel" data-tab="products">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z"/><path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 12.2V21"/></svg>Produk
+        </button>
+        <button class="admin-nav-item" type="button" role="tab" aria-selected="false" aria-controls="admin-panel" data-tab="orders">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15H4zM8 3v4m8-4v4M4 10h16M8 14h3m-3 3h7"/></svg>Pesanan
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-help"><span class="help-icon">?</span><div><strong>Butuh bantuan?</strong><small>Pusat bantuan admin</small></div><span aria-hidden="true">→</span></div>
+        <a class="sidebar-store-link" href="/">← Kembali ke toko</a>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="mobile-brand"><span class="brand-mark">T</span><strong>TechNova</strong></div>
+        <div class="breadcrumb"><span>Workspace</span><span>/</span><strong id="breadcrumb-current">Dashboard</strong></div>
+        <div class="topbar-actions">
+          <span class="admin-live"><i></i> Sistem aktif</span>
+          <button class="icon-button" type="button" aria-label="Notifikasi"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="notification-dot"></span></button>
+          <button class="admin-logout" id="admin-logout" type="button">Keluar</button>
+        </div>
+      </header>
+
+      <section class="admin-content" id="admin-panel" role="tabpanel" tabindex="-1">
+        <div class="admin-page-heading">
+          <div><p class="eyebrow">TECHNOVA OVERVIEW</p><h1 id="page-title">Dashboard</h1><p id="page-description">Pantau performa toko dan aktivitas penjualan hari ini.</p></div>
+          <button class="button button-primary" id="refresh-dashboard" type="button"><span aria-hidden="true">↻</span> Perbarui data</button>
+        </div>
+
+        <div class="admin-alert" id="admin-alert" role="status" aria-live="polite" hidden></div>
+
+        <section class="admin-tab-panel is-visible" data-panel="dashboard" aria-label="Dashboard">
+          <div class="kpi-grid" id="kpi-grid" aria-live="polite">
+            <article class="kpi-card"><div class="kpi-top"><span>Total Revenue</span><span class="kpi-icon kpi-blue">↗</span></div><strong class="kpi-value">—</strong><small>Memuat data…</small></article>
+            <article class="kpi-card"><div class="kpi-top"><span>Total Pesanan</span><span class="kpi-icon kpi-violet">▤</span></div><strong class="kpi-value">—</strong><small>Memuat data…</small></article>
+            <article class="kpi-card"><div class="kpi-top"><span>Rata-rata Pesanan</span><span class="kpi-icon kpi-cyan">◫</span></div><strong class="kpi-value">—</strong><small>Average order value</small></article>
+            <article class="kpi-card"><div class="kpi-top"><span>Pembeli Unik</span><span class="kpi-icon kpi-green">♙</span></div><strong class="kpi-value">—</strong><small>Customer bertransaksi</small></article>
+          </div>
+          <div class="analytics-grid">
+            <article class="admin-card revenue-card">
+              <div class="card-heading"><div><h2>Tren Pendapatan</h2><p>Pergerakan revenue berdasarkan periode</p></div><span class="card-tag">Revenue</span></div>
+              <div class="chart-summary"><strong id="revenue-total">—</strong><span>Total pada periode terpilih</span></div>
+              <div class="chart-wrap" id="revenue-chart"><div class="chart-loading">Grafik akan tampil setelah data tersedia.</div></div>
+            </article>
+            <article class="admin-card status-card">
+              <div class="card-heading"><div><h2>Status Pesanan</h2><p>Komposisi seluruh pesanan</p></div></div>
+              <div class="status-chart-wrap" id="status-chart"><div class="chart-loading">Memuat statistik…</div></div>
+              <div class="status-legend" id="status-legend"></div>
+            </article>
+          </div>
+          <div class="analytics-grid lower-analytics">
+            <article class="admin-card"><div class="card-heading"><div><h2>Produk Terlaris</h2><p>Lima produk dengan unit terjual terbanyak</p></div></div><div id="top-products" class="ranking-list"><div class="chart-loading">Memuat produk…</div></div></article>
+            <article class="admin-card"><div class="card-heading"><div><h2>Performa Brand</h2><p>Kontribusi revenue per brand</p></div></div><div id="brand-performance" class="brand-bars"><div class="chart-loading">Memuat brand…</div></div></article>
+          </div>
+        </section>
+
+        <section class="admin-tab-panel" data-panel="products" aria-label="Produk" hidden>
+          <div class="section-toolbar">
+            <div class="table-count" id="product-count">Daftar produk</div>
+            <div class="toolbar-controls"><label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="product-search" type="search" placeholder="Cari nama produk…" autocomplete="off"></label><select id="product-filter" aria-label="Filter status produk"><option value="active">Produk aktif</option><option value="inactive">Produk nonaktif</option><option value="all">Semua produk</option></select><button class="button button-primary" id="add-product" type="button"><span>＋</span> Tambah produk</button></div>
+          </div>
+          <div class="admin-card table-card"><div class="table-scroll"><table class="admin-table"><thead><tr><th>PRODUK</th><th>KATEGORI</th><th>HARGA</th><th>STOK</th><th>STATUS</th><th class="align-right">AKSI</th></tr></thead><tbody id="products-table"><tr><td colspan="6" class="table-state">Memuat produk…</td></tr></tbody></table></div><div class="table-footer"><span id="product-result-count">—</span><div class="pagination" id="product-pagination"></div></div></div>
+        </section>
+
+        <section class="admin-tab-panel" data-panel="orders" aria-label="Pesanan" hidden>
+          <div class="section-toolbar"><div class="table-count" id="order-count">Daftar pesanan</div><div class="toolbar-controls"><label class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="order-search" type="search" placeholder="Cari nomor / pelanggan…" autocomplete="off"></label><select id="order-filter" aria-label="Filter status pesanan"><option value="all">Semua status</option><option value="placed">Order placed</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="out_for_delivery">Out for delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></div></div>
+          <div class="admin-card table-card"><div class="table-scroll"><table class="admin-table"><thead><tr><th>NO. PESANAN</th><th>PELANGGAN</th><th>TANGGAL</th><th>TOTAL</th><th>STATUS</th><th class="align-right">UBAH STATUS</th></tr></thead><tbody id="orders-table"><tr><td colspan="6" class="table-state">Memuat pesanan…</td></tr></tbody></table></div><div class="table-footer"><span id="order-result-count">—</span><div class="pagination" id="order-pagination"></div></div></div>
+        </section>
+      </section>
+      <footer class="admin-footer"><span>© <span id="footer-year"></span> TechNova Admin</span><span>Better Tech. Brighter Tomorrow.</span></footer>
+    </main>
+  </div>
+
+  <dialog class="product-dialog" id="product-dialog" aria-labelledby="product-dialog-title">
+    <form id="product-form" novalidate>
+      <div class="dialog-heading"><div><p class="eyebrow">KATALOG TOKO</p><h2 id="product-dialog-title">Tambah produk</h2><p>Lengkapi informasi produk di bawah ini.</p></div><button class="dialog-close" type="button" id="close-product-dialog" aria-label="Tutup">×</button></div>
+      <div class="form-grid">
+        <label class="form-field form-span-2"><span>Nama produk <b>*</b></span><input name="name" required maxlength="120" placeholder="Contoh: Nova X Pro"><small class="field-error" data-error="name"></small></label>
+        <label class="form-field"><span>Merek <b>*</b></span><select name="brand_id" required><option value="">Pilih merek</option></select></label>
+        <label class="form-field"><span>Kategori <b>*</b></span><select name="category_id" required><option value="">Pilih kategori</option></select></label>
+        <label class="form-field"><span>Harga (Rp) <b>*</b></span><input name="price" type="number" min="1" max="1000000000" step="1" required placeholder="11999000"></label>
+        <label class="form-field"><span>Harga sebelum diskon</span><input name="original_price" type="number" min="1" step="1" placeholder="Opsional"></label>
+        <label class="form-field"><span>Stok <b>*</b></span><input name="stock" type="number" min="0" step="1" required value="0"></label>
+        <label class="form-field"><span>Storage</span><input name="storage" maxlength="40" placeholder="256GB"></label>
+        <label class="form-field form-span-2"><span>URL gambar <b>*</b></span><input name="image_url" type="text" required placeholder="https://… atau /img/products/…"><small class="field-hint">Gunakan URL HTTPS atau path lokal yang diawali /img/.</small><small class="field-error" data-error="image_url"></small></label>
+        <div class="form-field form-span-2 upload-field"><span>Foto produk dari galeri</span>
+          <input id="product-image-file" type="file" accept="image/png,image/jpeg,image/webp">
+          <small class="field-hint" id="product-image-status">JPG, PNG, atau WebP, maksimal 2 MB. Setelah dipilih, kolom URL gambar terisi otomatis.</small>
+          <img id="product-image-preview" class="upload-preview" alt="Pratinjau gambar produk" hidden>
+        </div>
+        <label class="form-field form-span-2"><span>Deskripsi</span><textarea name="description" rows="3" maxlength="1000" placeholder="Jelaskan keunggulan produk…"></textarea></label>
+        <label class="form-field"><span>Layar</span><input name="spec_display" maxlength="80" placeholder="6.3 inch OLED"></label>
+        <label class="form-field"><span>Chipset</span><input name="spec_chip" maxlength="80" placeholder="A18 Pro"></label>
+        <label class="form-field"><span>Kamera</span><input name="spec_camera" maxlength="80" placeholder="48MP + 12MP"></label>
+        <label class="form-field"><span>Baterai</span><input name="spec_battery" maxlength="80" placeholder="3.582 mAh"></label>
+        <label class="form-field form-span-2"><span>Jaringan</span><input name="spec_network" maxlength="80" placeholder="5G"></label>
+        <label class="form-field form-span-2"><span>Warna (pisahkan dengan koma)</span><input name="colors" placeholder="Titanium Blue, Black"></label>
+      </div>
+      <p class="admin-alert is-error" id="product-dialog-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button class="button button-quiet" type="button" id="cancel-product">Batal</button><button class="button button-primary" type="submit" id="save-product">Simpan produk</button></div>
+    </form>
+  </dialog>
+  <script type="module" src="/js/pages/admin.js"></script>
+</body>
+</html>

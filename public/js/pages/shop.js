@@ -10,6 +10,7 @@ const brandSelect = document.querySelector('#filter-brand');
 const categorySelect = document.querySelector('#filter-category');
 const count = document.querySelector('[data-result-count]');
 let page = Math.max(1, Number(params.get('page')) || 1);
+const MOBILE_QUERY = '(max-width: 639px)';
 
 brandSelect.value = params.get('brand') || '';
 categorySelect.value = params.get('category') || '';
@@ -25,7 +26,11 @@ Promise.all([get('/brands'), get('/categories')]).then(([brands, categories]) =>
   categorySelect.value = params.get('category') || '';
 }).catch(() => {}).finally(loadProducts);
 
-document.querySelector('.filter-submit').addEventListener('click', () => { page = 1; loadProducts(); });
+document.querySelector('.filter-submit').addEventListener('click', async () => {
+  page = 1;
+  await loadProducts();
+  if (window.matchMedia(MOBILE_QUERY).matches) count.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 document.querySelector('#sort-products').addEventListener('change', () => { page = 1; loadProducts(); });
 
 async function loadProducts() {
@@ -34,8 +39,15 @@ async function loadProducts() {
     min: document.querySelector('#filter-min').value, max: document.querySelector('#filter-max').value,
     deal: document.querySelector('#filter-deal').value };
   Object.entries(values).forEach(([key, value]) => { if (value !== '' && value !== null) query.set(key, value); });
-  productsRoot.replaceChildren(...Array.from({ length: 8 }, () => h('div', { className: 'product-card' },
-    h('div', { className: 'skeleton skeleton-media' }), h('div', { className: 'product-info' }, h('div', { className: 'skeleton skeleton-line' }))));
+  productsRoot.replaceChildren(...Array.from({ length: 8 }, () =>
+  h('div', { className: 'product-card' },
+    h('div', { className: 'skeleton skeleton-media' }),
+    h('div', { className: 'product-info' },
+      h('div', { className: 'skeleton skeleton-line' }),
+      h('div', { className: 'skeleton skeleton-line short' })
+    )
+  )
+));
   count.textContent = 'Memuat katalog...';
   try {
     const result = await get(`/products?${query}`);

@@ -14,7 +14,7 @@ async function loadProducts(selector, endpoint) {
   const root = document.querySelector(selector);
   root.replaceChildren(...Array.from({ length: 4 }, () => h('div', { className: 'product-card' },
     h('div', { className: 'skeleton skeleton-media', 'aria-hidden': 'true' }),
-    h('div', { className: 'product-info' }, h('div', { className: 'skeleton skeleton-line' }), h('div', { className: 'skeleton skeleton-line short' }))));
+    h('div', { className: 'product-info' }, h('div', { className: 'skeleton skeleton-line' }), h('div', { className: 'skeleton skeleton-line short' })))));
   try {
     const result = await get(endpoint);
     const items = result.items || [];

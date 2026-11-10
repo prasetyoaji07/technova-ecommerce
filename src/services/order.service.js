@@ -34,6 +34,46 @@ const createOrderTransaction = db.transaction((userId, input) => {
   return { order_number: orderNumber, status: 'placed', subtotal, shipping_fee: shipping, total: subtotal + shipping,
     payment_status: paymentStatus, estimated_delivery: delivery };
 });
+const NEXT_STATUSES = {
+  placed: ['processing', 'cancelled'],
+  processing: ['shipped', 'cancelled'],
+  shipped: ['out_for_delivery', 'cancelled'],
+  out_for_delivery: ['delivered'],
+  delivered: [],
+  cancelled: []
+};
+const STATUS_LABELS = {
+  placed: 'Pesanan dibuat', processing: 'Diproses', shipped: 'Dikirim',
+  out_for_delivery: 'Dalam perjalanan', delivered: 'Terkirim', cancelled: 'Dibatalkan'
+};
+
+function restockOrderItems(orderId) {
+  const items = db.prepare('SELECT product_id,qty FROM order_items WHERE order_id=?').all(orderId);
+  const restock = db.prepare('UPDATE products SET stock=stock+? WHERE id=?');
+  for (const item of items) restock.run(item.qty, item.product_id);
+}
+
+const changeStatusTransaction = db.transaction((orderId, status, note) => {
+  const order = db.prepare('SELECT id,status FROM orders WHERE id=?').get(orderId);
+  if (!order) throw new AppError(404, 'ORDER_NOT_FOUND', 'Pesanan tidak ditemukan.');
+  if (!NEXT_STATUSES[order.status]?.includes(status)) {
+    throw new AppError(422, 'INVALID_STATUS_TRANSITION',
+      `Status tidak dapat diubah dari "${STATUS_LABELS[order.status]}" ke "${STATUS_LABELS[status]}".`);
+  }
+  db.prepare('UPDATE orders SET status=? WHERE id=?').run(status, order.id);
+  db.prepare('INSERT INTO order_tracking(order_id,status,note) VALUES(?,?,?)').run(order.id, status, note);
+  if (status === 'cancelled') {
+    restockOrderItems(order.id);
+    db.prepare("UPDATE orders SET payment_status='failed' WHERE id=? AND payment_status='paid'").run(order.id);
+  }
+});
+
+export function changeOrderStatus(orderId, status, note = '') {
+  if (!Number.isInteger(orderId)) throw new AppError(404, 'ORDER_NOT_FOUND', 'Pesanan tidak ditemukan.');
+  changeStatusTransaction(orderId, status, note);
+  return { updated: true, status };
+}
+
 export function createOrder(userId, input) { return createOrderTransaction(userId, input); }
 function makeOrderNumber() {
   for (let i = 0; i < 20; i += 1) {

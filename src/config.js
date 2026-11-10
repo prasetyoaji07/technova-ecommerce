@@ -17,5 +17,13 @@ export const config = Object.freeze({
   adminPassword: process.env.ADMIN_PASSWORD || '',
   shippingFee: 25000,
   freeShippingThreshold: 1000000,
-  maxQty: 10
+  maxQty: 10,
+  rateLimit: Object.freeze({
+    windowMs: 15 * 60 * 1000,
+    globalLimit: 300,
+    globalLimitDevelopment: 3000,
+    authLimit: 10,
+    chatWindowMs: 60 * 1000,
+    chatLimit: 20
+  })
 });

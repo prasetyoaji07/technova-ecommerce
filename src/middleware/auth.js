@@ -19,6 +19,10 @@ export function requireAuth(req, res, next) {
     return next();
   });
 }
+export function blockAdmin(req, res, next) {
+  if (req.user?.role === 'admin') return next(new AppError(403, 'ADMIN_CANNOT_SHOP', 'Akun admin tidak dapat berbelanja.'));
+  return next();
+}
 export function requireRole(role) {
   return (req, res, next) => {
     if (req.user?.role !== role) return next(new AppError(403, 'FORBIDDEN', 'Akses ditolak.'));

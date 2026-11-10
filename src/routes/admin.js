@@ -7,13 +7,26 @@ import { success } from '../utils/response.js';
 import { AppError } from '../utils/app-error.js';
 import { clearCatalogCache } from '../services/catalog-context.js';
 import { getDashboardStats } from '../services/stats.service.js';
+import { changeOrderStatus } from '../services/order.service.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+
+const UPLOAD_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../public/img/uploads');
+const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
+const IMAGE_TYPES = {
+  'image/jpeg': { ext: 'jpg', magic: b => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
+  'image/png': { ext: 'png', magic: b => b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47 },
+  'image/webp': { ext: 'webp', magic: b => b.subarray(0, 4).toString() === 'RIFF' && b.subarray(8, 12).toString() === 'WEBP' }
+};
 
 const router = Router();
 router.use(requireAuth, requireRole('admin'));
 const productSchema = z.object({
   brand_id: z.number().int().positive(), category_id: z.number().int().positive(),
   name: z.string().trim().min(2).max(120), slug: z.string().regex(/^[a-z0-9-]+$/),
-  description: z.string().max(2000).default(''), price: z.number().int().nonnegative(),
+  description: z.string().max(2000).default(''), price: z.number().int().nonnegative().max(1000000000),
   original_price: z.number().int().positive().nullable().default(null), stock: z.number().int().nonnegative(),
   storage: z.string().max(40).default(''), colors: z.array(z.string().max(40)).default([]),
   specs: z.record(z.string(), z.string()).default({}), image_url: z.string().max(500).default('')
@@ -61,15 +74,24 @@ router.patch('/products/:id/restore', (req, res, next) => {
   return success(res, { restored: true });
 });
 router.get('/orders', (req, res) => success(res, db.prepare('SELECT * FROM orders ORDER BY created_at DESC').all()));
-router.patch('/orders/:id/status', validate(statusSchema), (req, res, next) => {
-  const order = db.prepare('SELECT id,status FROM orders WHERE id=?').get(Number(req.params.id));
-  if (!order) return next(new AppError(404,'ORDER_NOT_FOUND','Pesanan tidak ditemukan.'));
-  const result = db.transaction(() => {
-    db.prepare('UPDATE orders SET status=? WHERE id=?').run(req.body.status, order.id);
-    db.prepare('INSERT INTO order_tracking(order_id,status,note) VALUES(?,?,?)').run(order.id,req.body.status,req.body.note);
-  });
-  result();
-  return success(res, { updated: true, status: req.body.status });
+router.patch('/orders/:id/status', validate(statusSchema), (req, res) => {
+  success(res, changeOrderStatus(Number(req.params.id), req.body.status, req.body.note));
+});
+router.post('/upload', (req, res) => {
+  const data = req.body?.data;
+  if (typeof data !== 'string' || !data.startsWith('data:')) throw new AppError(422, 'VALIDATION_ERROR', 'File gambar tidak valid.');
+  const comma = data.indexOf(',');
+  const meta = data.slice(5, comma);
+  const type = meta.replace(';base64', '');
+  const kind = IMAGE_TYPES[type];
+  if (!kind || !meta.endsWith(';base64')) throw new AppError(422, 'VALIDATION_ERROR', 'Format gambar harus JPG, PNG, atau WebP.');
+  const buffer = Buffer.from(data.slice(comma + 1), 'base64');
+  if (!buffer.length || buffer.length > MAX_UPLOAD_BYTES) throw new AppError(422, 'VALIDATION_ERROR', 'Ukuran gambar maksimal 2 MB.');
+  if (!kind.magic(buffer)) throw new AppError(422, 'VALIDATION_ERROR', 'Isi file bukan gambar yang valid.');
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  const name = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}.${kind.ext}`;
+  fs.writeFileSync(path.join(UPLOAD_DIR, name), buffer);
+  return success(res, { image_url: `/img/uploads/${name}` }, 201);
 });
 function validateImage(value) {
   if (value && !(/^https:\/\//i.test(value) || /^\/img\//.test(value))) {

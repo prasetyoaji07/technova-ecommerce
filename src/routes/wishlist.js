@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db/connection.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, blockAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { success } from '../utils/response.js';
 
 const router = Router();
-router.use(requireAuth);
+router.use(requireAuth, blockAdmin);
 const schema = z.object({ product_id: z.number().int().positive() }).strict();
 router.get('/', (req, res) => {
   const items = db.prepare(`SELECT p.id,p.name,p.slug,p.price,p.image_url,p.stock

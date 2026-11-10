@@ -1,18 +1,23 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db/connection.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, blockAdmin } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { createOrder } from '../services/order.service.js';
 import { success } from '../utils/response.js';
 import { AppError } from '../utils/app-error.js';
 
 const router = Router();
-router.use(requireAuth);
+router.use(requireAuth, blockAdmin);
+const NAME_PATTERN = /^[\p{L}][\p{L}\s.'’-]*$/u;
+const POSTAL_PATTERN = /^\d{5}$/;
+const PHONE_PATTERN = /^(?:\+62|62|0)8\d{8,12}$/;
 const checkoutSchema = z.object({
-  ship_name: z.string().trim().min(2).max(100), ship_address: z.string().trim().min(5).max(300),
-  ship_city: z.string().trim().min(2).max(100), ship_postal_code: z.string().trim().min(3).max(12),
-  ship_phone: z.string().trim().min(8).max(20),
+  ship_name: z.string().trim().min(2).max(100).regex(NAME_PATTERN, 'Nama hanya boleh berisi huruf.'),
+  ship_address: z.string().trim().min(5).max(300).regex(/\p{L}/u, 'Alamat harus memuat huruf.'),
+  ship_city: z.string().trim().min(2).max(100).regex(NAME_PATTERN, 'Kota hanya boleh berisi huruf.'),
+  ship_postal_code: z.string().trim().regex(POSTAL_PATTERN, 'Kode pos harus 5 digit angka.'),
+  ship_phone: z.string().trim().regex(PHONE_PATTERN, 'Nomor telepon tidak valid.'),
   payment_method: z.enum(['card','paypal','apple_pay','cod'])
 }).strict();
 
